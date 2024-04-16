@@ -30,9 +30,7 @@ hash_t control_sum_hash_func (const hash_elem_t elem, int *code_error)
 
     hash_t control_sum = 0;
 
-    size_t len_elem = strlen(elem);
-
-    for (size_t i = 0; i < len_elem; i++)
+    for (size_t i = 0; elem[i] != '\0'; i++)
     {
         control_sum += elem[i];
     }
@@ -53,11 +51,7 @@ hash_t ror_hash_func (const hash_elem_t elem, int *code_error)
 
     hash_t hash = 0;
 
-    size_t len_elem = strlen(elem);
-
-    if (len_elem == 0) {return hash;}
-
-    for (size_t i = 0; i < len_elem; i++)
+    for (size_t i = 0; elem[i] != '\0'; i++)
     {
         hash = ((hash >> 1) | (hash << 63)) ^ elem[i];
     }
@@ -71,11 +65,7 @@ hash_t rol_hash_func (const hash_elem_t elem, int *code_error)
 
     hash_t hash = 0;
 
-    size_t len_elem = strlen(elem);
-
-    if (len_elem == 0) {return hash;}
-
-    for (size_t i = 0; i < len_elem; i++)
+    for (size_t i = 0; elem[i] != '\0'; i++)
     {
         hash = ((hash << 1) | (hash >> 63)) ^ elem[i];
     }
@@ -91,9 +81,7 @@ hash_t crc32_hash_func (const hash_elem_t elem, int *code_error)
 
     hash_t crc = 0xffffffff;
 
-    size_t len_elem = strlen(elem);
-
-    for (size_t i = 0; i < len_elem; i++)
+    for (size_t i = 0; elem[i] != '\0'; i++)
     {
         crc ^= elem[i];
 
@@ -110,7 +98,7 @@ hash_t crc32_hash_func (const hash_elem_t elem, int *code_error)
         }
     }
 
-    return crc;
+    return ~crc;
 }
 
 #endif // HASH_FUNC_CPP
