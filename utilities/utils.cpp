@@ -73,7 +73,7 @@ size_t get_n_lines (char *str, int *code_error)
 
     size_t n_lines = 0;
 
-    for (size_t i = 0; i < strlen(str); i++)
+    for (size_t i = 0; str[i] != '\0'; i++)
     {
         if (str[i] == '\n')
         {

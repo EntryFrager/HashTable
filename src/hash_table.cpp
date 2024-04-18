@@ -6,18 +6,14 @@
 
 static const int LIST_SIZE = 2;
 
-#ifdef MAKE_PLOT
-    static const char *FILE_NAME_CSV    = "table.csv";
-    static const char *FOLDER_PLOT_FILE = "./plot";
-    static const char *CMD_PLOT_PY      = "python3 ./make_graphics.py";
-#endif
-
 #ifdef HASH_TABLE_DEBUG
-    static const char *HASH_TABLE_FOLDER_ERR  = "./debug";
-    static const char *HASH_TABLE_FP_ERR_NAME = "./debug/hash_table/file_err.txt";
+    static const char *DEBUG_FOLDER               = "./debug";
+    static const char *HASH_TABLE_DEBUG_FOLDER    = "./debug/hash_table_dump";
+    static const char *HASH_TABLE_DEBUG_FILE_NAME = "./debug/hash_table_dump/hash_table_dump.txt";
 #endif
 
 static inline void check_list_for_availability (HashTable *hash_table, const hash_t hash, int *code_error);
+extern "C" int my_strcmp (const char *str_1, const char *str_2);
 
 void *hash_init (HashTable *hash_table, hash_func_t hash_func, const int hash_table_size, int *code_error)
 {
@@ -72,27 +68,23 @@ void check_list_for_availability (HashTable *hash_table, const hash_t hash, int 
     }
 }
 
-int *hash_find_elem (const HashTable *hash_table, const hash_elem_t elem, int *code_error)
+void hash_find_elem (const HashTable *hash_table, HashElemPos *hash_elem_pos, const hash_elem_t elem, int *code_error)
 {
+    my_assert(hash_elem_pos != NULL, ERR_PTR);
+    my_assert(elem != NULL, ERR_PTR);
     assert_hash_table(hash_table);
 
-    hash_t hash_elem = hash_table->hash_func(elem, code_error);
+    hash_elem_pos->hash_table_pos_elem = hash_table->hash_func(elem, code_error) % hash_table->size;
 
-    static int pos_elem[2] = {};
-
-    pos_elem[0] = (int) hash_elem;
-
-    for (int i = 0; i < hash_table->data[hash_elem]->size; i++)
+    for (int i = 1; i < hash_table->data[hash_elem_pos->hash_table_pos_elem]->size; i++)
     {
-        if (strcmp(elem, hash_table->data[hash_elem]->data[i].value) == 0)
+        if (strcmp(elem, hash_table->data[hash_elem_pos->hash_table_pos_elem]->data[i].value) == 0)
         {
-            pos_elem[1] = i;
+            hash_elem_pos->list_pos_elem = i;
 
-            return pos_elem;
+            return;
         }
     }
-
-    return NULL;
 }
 
 void hash_delete_elem (HashTable *hash_table, const hash_elem_t elem, int *code_error)
@@ -100,54 +92,20 @@ void hash_delete_elem (HashTable *hash_table, const hash_elem_t elem, int *code_
     assert_hash_table(hash_table);
     my_assert(elem != NULL, ERR_PTR);
 
-    int *pos_elem = hash_find_elem(hash_table, elem, code_error);
+    HashElemPos hash_elem_pos = {};
+    hash_find_elem(hash_table, &hash_elem_pos, elem, code_error);
 
-    if (hash_table->data[pos_elem[0]]->size == LIST_SIZE)
+    if (hash_table->data[hash_elem_pos.hash_table_pos_elem]->size == LIST_SIZE)
     {
-        list_deinit(hash_table->data[pos_elem[0]], code_error);
+        list_deinit(hash_table->data[hash_elem_pos.hash_table_pos_elem], code_error);
     }
     else
     {
-        list_delete_elem(hash_table->data[pos_elem[0]], (int) pos_elem[1], code_error);
+        list_delete_elem(hash_table->data[hash_elem_pos.hash_table_pos_elem], hash_elem_pos.list_pos_elem, code_error);
     }
 
     assert_hash_table(hash_table);
 }
-
-#ifdef MAKE_PLOT
-
-void make_plot (const HashTable *hash_table, const char *name_hash_func, int *code_error)
-{
-    assert_hash_table(hash_table);
-
-    create_folder(FOLDER_PLOT_FILE, code_error);
-
-    char file_name[50] = "";
-
-    sprintf(file_name, "%s/%s_%s", FOLDER_PLOT_FILE, name_hash_func, FILE_NAME_CSV);
-
-    fopen_(fp_hash_plot, file_name, "w+");
-
-    for (int i = 1; i <= hash_table->size; i++)
-    {
-        if (hash_table->data[i - 1] == NULL)
-        {
-            fprintf(fp_hash_plot, "%d; 0\n", i);
-            continue;
-        }
-
-        fprintf(fp_hash_plot, "%d; %d\n", i, hash_table->data[i - 1]->size);
-    }
-
-    fclose_(fp_hash_plot);
-
-    char make_plot_cmd[100] = "";
-    sprintf(make_plot_cmd, "%s %s %s", CMD_PLOT_PY, file_name, name_hash_func);
-
-    my_assert(system(make_plot_cmd) != -1, ERR_SYSTEM);
-}
-
-#endif
 
 void hash_destroy (HashTable *hash_table, int *code_error)
 {
@@ -206,13 +164,10 @@ void hash_table_verificator (const HashTable *hash_table, int *code_error)
 
 void hash_table_dump_text (const HashTable *hash_table, int *code_error, const char *file_err, const char *func_err, const int line_err)
 {
-    create_folder(HASH_TABLE_FOLDER_ERR, code_error);
+    create_folder(DEBUG_FOLDER, code_error);
+    create_folder(HASH_TABLE_DEBUG_FOLDER, code_error);
 
-    FOPEN_(fp_err, HASH_TABLE_FP_ERR_NAME, "a");
-
-    my_strerr(*code_error, fp_err);
-
-    DUMP_LOG_PARAM("hash table[%p] \"hash table\" called from %s(%d) %s\n", hash_table, file_err, line_err, func_err);
+    fopen_(fp_err, HASH_TABLE_DEBUG_FILE_NAME, "a");
 
     if (fp_err == NULL)
     {
@@ -220,6 +175,10 @@ void hash_table_dump_text (const HashTable *hash_table, int *code_error, const c
     }
     else if (hash_table != NULL)
     {
+        my_strerr(*code_error, fp_err);
+
+        DUMP_LOG_PARAM("hash table[%p] \"hash table\" called from %s(%d) %s\n", hash_table, file_err, line_err, func_err);
+
         DUMP_LOG("{\n");
 
         DUMP_LOG_PARAM("\thash function[%p]\n", hash_table->hash_func);
@@ -236,6 +195,11 @@ void hash_table_dump_text (const HashTable *hash_table, int *code_error, const c
                     if (hash_table->data[i] != NULL)
                     {
                         DUMP_LOG_PARAM("\t\tdata[%d] = list[%p]\n", i, hash_table->data[i]);
+
+                        if (hash_table->data[i] != NULL)
+                        {
+                            list_dump(hash_table->data[i], code_error);
+                        }
                     }
                 }
             }
@@ -246,7 +210,7 @@ void hash_table_dump_text (const HashTable *hash_table, int *code_error, const c
         DUMP_LOG("}\n\n-----------------------------------------------------------\n");
     }
 
-    FCLOSE_(fp_err);
+    fclose_(fp_err);
 }
 
 #undef DUMP_LOG

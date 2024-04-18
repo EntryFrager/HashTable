@@ -24,12 +24,14 @@ static const int DOWN = 2;
 static const int COEF_UP = 2;
 
 #ifdef LIST_DEBUG
-    static const char *LIST_FP_ERR_NAME          = "./debug/list/file_err.txt";
-    static const char *LIST_FP_DOT_NAME          = "./debug/list/dump.dot";
-    static const char *LIST_FP_HTML_DOT_NAME     = "./debug/list/dot.html";
-    static const char *LIST_FP_IMAGE             = "./debug/list/dot.svg";
+    static const char *DEBUG_FOLDER              = "./debug";
+    static const char *LIST_DEBUG_FOLDER         = "./debug/list_debug";
+    static const char *LIST_FP_ERR_NAME          = "./debug/list_debug/list_debug.txt";
+    static const char *LIST_FP_DOT_NAME          = "./debug/list_debug/dump.dot";
+    static const char *LIST_FP_HTML_DOT_NAME     = "./debug/list_debug/dot.html";
+    static const char *LIST_FP_IMAGE             = "./debug/list_debug/dot.svg";
 
-    static const char *CMD_COMPILE_LIST_DOT_FILE = "dot -Tsvg ./debug/list/dump.dot -o ./debug/list/dot.svg";
+    static const char *CMD_COMPILE_LIST_DOT_FILE = "dot -Tsvg ./debug/list_debug/dump.dot -o ./debug/list_debug/dot.svg";
 #endif
 
 static int list_get_elem_index (const List *list, const int index, int *code_error);
@@ -424,7 +426,7 @@ void list_verification (const List *list, int *code_error)
 {
     my_assert(list != NULL, ERR_LIST);
 
-    my_assert(list->is_init == false, LIST_POINTER_GARBAGE);
+    my_assert(list->is_init != false, LIST_POINTER_GARBAGE);
 
     if (*code_error == ERR_NO)
     {
@@ -481,11 +483,10 @@ void list_node_verificator (const List *list, int *code_error)
 
 void list_dump_text (const List *list, int *code_error, const char *file_err, const char *func_err, const int line_err)
 {
-    FOPEN_(fp_err, LIST_FP_ERR_NAME, "a");
+    create_folder(DEBUG_FOLDER, code_error);
+    create_folder(LIST_DEBUG_FOLDER, code_error);
 
-    my_strerr(*code_error, fp_err);
-
-    DUMP_LOG_PARAM("list[%p] \"list\" called from %s(%d) %s\n", list, file_err, line_err, func_err);
+    fopen_(fp_err, LIST_FP_ERR_NAME, "a");
 
     if (fp_err == NULL)
     {
@@ -493,6 +494,10 @@ void list_dump_text (const List *list, int *code_error, const char *file_err, co
     }
     else if (list != NULL)
     {
+        my_strerr(*code_error, fp_err);
+
+        DUMP_LOG_PARAM("list[%p] \"list\" called from %s(%d) %s\n", list, file_err, line_err, func_err);
+
         DUMP_LOG("{\n");
 
         DUMP_LOG_PARAM("\tsize = %d\n", list->size);
@@ -521,7 +526,7 @@ void list_dump_text (const List *list, int *code_error, const char *file_err, co
         DUMP_LOG("}\n\n-----------------------------------------------------------\n");
     }
 
-    FCLOSE_(fp_err);
+    fclose_(fp_err);
 }
 
 #undef DUMP_LOG
@@ -532,7 +537,10 @@ void list_dump_text (const List *list, int *code_error, const char *file_err, co
 
 void list_dump_graph_viz (const List *list, int *code_error, const char *file_err, const char *func_err, const int line_err)
 {
-    FOPEN_(fp_dot, LIST_FP_DOT_NAME, "w+");
+    create_folder(DEBUG_FOLDER, code_error);
+    create_folder(LIST_DEBUG_FOLDER, code_error);
+
+    fopen_(fp_dot, LIST_FP_DOT_NAME, "w+");
 
     const char *color = WHITE_COLOR;
 
@@ -611,7 +619,7 @@ void list_dump_graph_viz (const List *list, int *code_error, const char *file_er
         DUMP_DOT_PARAM("\tAll[shape = Mrecord, style = filled, fillcolor = " PURPLE_COLOR ", label = \"size = %d\"];}\n", list->size);
     }
 
-    FCLOSE_(fp_dot);
+    fclose_(fp_dot);
 
     my_assert(system(CMD_COMPILE_LIST_DOT_FILE) != -1, ERR_SYSTEM);
 
@@ -623,8 +631,8 @@ void list_dump_graph_viz (const List *list, int *code_error, const char *file_er
 
 void list_dump_html (int *code_error)
 {
-    FOPEN_(fp_dot, LIST_FP_IMAGE, "r");
-    FOPEN_(fp_html_dot, LIST_FP_HTML_DOT_NAME, "a");
+    fopen_(fp_dot, LIST_FP_IMAGE, "r");
+    fopen_(fp_html_dot, LIST_FP_HTML_DOT_NAME, "a");
 
     size_t size_dot = get_file_size(fp_dot, code_error);
 
@@ -636,8 +644,8 @@ void list_dump_html (int *code_error)
 
     free(data_dot);
 
-    FCLOSE_(fp_html_dot);
-    FCLOSE_(fp_dot);
+    fclose_(fp_html_dot);
+    fclose_(fp_dot);
 }
 
 #endif

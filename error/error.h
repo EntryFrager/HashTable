@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
     #define PRINT_ERROR        if (code_error != ERR_NO) {my_strerr(code_error, stderr);}

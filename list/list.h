@@ -8,7 +8,9 @@
 #include "../error/error.h"
 #include "../utilities/utils.h"
 
-// #define LIST_DEBUG
+#ifdef DEBUG
+    #define LIST_DEBUG
+#endif
 
 #ifdef LIST_DEBUG
     #define assert_list(list)                   \

@@ -13,4 +13,6 @@ typedef struct {
 
 void get_statistic_hash_table (HashTable *hash_table, StatisticsHashTable *stat, int *code_error);
 
+void make_plot (const HashTable *hash_table, const char *name_hash_func, int *code_error);
+
 #endif // HASH_TABLE_STATISTICS_H

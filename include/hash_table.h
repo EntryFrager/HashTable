@@ -3,7 +3,7 @@
 
 #include <math.h>
 
-typedef unsigned long hash_t;
+typedef unsigned hash_t;
 
 typedef char * hash_elem_t;
 
@@ -12,8 +12,11 @@ typedef hash_t (*hash_func_t)(const hash_elem_t elem, int *code_error);
 #include "../list/list.h"
 #include "./hash_func.h"
 
-// #define HASH_TABLE_DEBUG
-#define MAKE_PLOT
+#ifdef DEBUG
+    #define HASH_TABLE_DEBUG
+#endif
+
+// #define GET_STATISTICS
 
 #ifdef HASH_TABLE_DEBUG
     #define assert_hash_table(hash_table)               \
@@ -35,6 +38,11 @@ typedef hash_t (*hash_func_t)(const hash_elem_t elem, int *code_error);
 #endif
 
 typedef struct {
+    int hash_table_pos_elem = 0;
+    int list_pos_elem       = 0;
+} HashElemPos;
+
+typedef struct {
     bool is_init = false;
     int size = 0;
     int n_load_elements = 0;
@@ -50,11 +58,9 @@ void hash_filling (HashTable *hash_table, const hash_elem_t *data, const size_t 
 
 void hash_insert_elem (HashTable *hash_table, const hash_elem_t elem, int *code_error);
 
-int *hash_find_elem (const HashTable *hash_table, const hash_elem_t elem, int *code_error);
+void hash_find_elem (const HashTable *hash_table, HashElemPos *hash_elem_pos, const hash_elem_t elem, int *code_error);
 
 void hash_delete_elem (HashTable *hash_table, const hash_elem_t elem, int *code_error);
-
-void make_plot (const HashTable *hash_table, const char *name_hash_func, int *code_error);
 
 void hash_destroy (HashTable *hash_table, int *code_error);
 
