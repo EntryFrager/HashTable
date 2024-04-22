@@ -4,7 +4,7 @@
 #include "pars.h"
 #include "../utilities/utils.h"
 
-static const char *file_pars_text_name = "../pars_text.txt";
+static const char *file_pars_text_name = "../text/pars_text.txt";
 
 static char *input_file             (const char *file_name,       size_t *size_file, int *code_error);
 static char *pars_buf               (      char *buf      , const size_t size_file , int *code_error);

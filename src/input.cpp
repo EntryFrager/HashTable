@@ -32,13 +32,25 @@ char **pars_text (char *text, size_t *len_data, int *code_error)
 
     calloc_g_(data, char **, *len_data, sizeof(hash_elem_t));
 
+    char *word = NULL;
+    int len_word = 0;
+
     for (size_t i = 0; i < *len_data; i++)
     {
-        data[i] = text;
+        calloc_g_(str, char *, 32, sizeof(char));
+        word = text;
 
-        while (*text != '\n') {text++;}
+        len_word = 0;
+
+        while (*text != '\n')
+        {
+            text++;
+            len_word++;
+        }
 
         *(text++) = '\0';
+
+        data[i] = strncat(str, word, len_word);
     }
 
     return data;

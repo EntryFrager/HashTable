@@ -3,6 +3,7 @@
 
 #include "../include/hash_table.h"
 #include "../include/hash_table_statistics.h"
+#include "../include/my_strcmp.h"
 
 static const int LIST_SIZE = 2;
 
@@ -13,7 +14,6 @@ static const int LIST_SIZE = 2;
 #endif
 
 static inline void check_list_for_availability (HashTable *hash_table, const hash_t hash, int *code_error);
-extern "C" int my_strcmp (const char *str_1, const char *str_2);
 
 void *hash_init (HashTable *hash_table, hash_func_t hash_func, const int hash_table_size, int *code_error)
 {

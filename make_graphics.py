@@ -5,8 +5,8 @@ import sys
 X = []
 Y = []
 
-with open(sys.argv[1], 'r') as datafile:
-    plotting = csv.reader(datafile, delimiter=';')
+with open(sys.argv[1], 'r') as file:
+    plotting = csv.reader(file, delimiter=';')
 
     for ROWS in plotting:
         X.append(float(ROWS[0]))

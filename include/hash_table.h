@@ -11,12 +11,13 @@ typedef hash_t (*hash_func_t)(const hash_elem_t elem, int *code_error);
 
 #include "../list/list.h"
 #include "./hash_func.h"
+#include "./my_strcmp.h"
 
 #ifdef DEBUG
     #define HASH_TABLE_DEBUG
 #endif
 
-// #define GET_STATISTICS
+#define GET_STATISTICS
 
 #ifdef HASH_TABLE_DEBUG
     #define assert_hash_table(hash_table)               \

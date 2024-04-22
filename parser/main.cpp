@@ -1,6 +1,6 @@
 #include "pars.h"
 
-const char *file_name = "../onegin.txt";
+const char *file_name = "../text/onegin.txt";
 
 int main ()
 {

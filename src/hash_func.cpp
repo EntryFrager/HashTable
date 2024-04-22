@@ -123,19 +123,19 @@ hash_t inline_asm_crc32_hash_func (const hash_elem_t elem, int *code_error)
 
     hash_t hash = 0;
 
-    __asm__ ("xor rax, rax                  \n\t"
-             "mov eax, 0xffffffff           \n\t"
-             "jmp .if_loop                  \n\t"
-             ".loop:                        \n\t"
-             "crc32 eax, byte ptr [%[elem]] \n\t"
-             "inc %1                        \n\t"
-             ".if_loop:                     \n\t"
-             "cmp byte ptr [%[elem]], 0     \n\t"
-             "ja .loop                      \n\t"
-             "mov %[hash], eax              \n\t"
-             :[hash] "=m"(hash)
-             :[elem] "d"(elem)
-             :"%rax");
+    __asm__("xor rax, rax                  \n\t"
+            "mov eax, 0xffffffff           \n\t"
+            "jmp .if_loop                  \n\t"
+            ".loop:                        \n\t"
+            "crc32 eax, byte ptr [%[elem]] \n\t"
+            "inc %[elem]                   \n\t"
+            ".if_loop:                     \n\t"
+            "cmp byte ptr [%[elem]], 0     \n\t"
+            "ja .loop                      \n\t"
+            "mov %[hash], eax              \n\t"
+            :[hash] "=m"(hash)
+            :[elem] "d"(elem)
+            :"%rax");
 
     return hash;
 }

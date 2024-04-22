@@ -187,7 +187,7 @@ void add_pointer_dyn_mem(void *ptr_dyn_mem, int *code_error)
     }
 
     array_ptr_dyn_mem[n_ptr_dyn_mem] = ptr_dyn_mem;
-    n_ptr_dyn_mem++;
+    n_ptr_dyn_mem *= COEF_REALLOC_UP;
 }
 
 void free_ptr_dyn_mem ()

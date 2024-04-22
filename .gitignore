@@ -2,4 +2,4 @@
 *.o
 .vscode
 *.exe
-*.out
+/callgrind
