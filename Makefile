@@ -1,6 +1,6 @@
 CC = g++
 
-CFLAGS = -c -msse4.2 -mavx -mavx2 -masm=intel -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-equal -Winline		\
+CFLAGS = -c -O3 -msse4.2 -mavx -mavx2 -masm=intel -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-equal -Winline		\
 	-Wunreachable-code -Wmissing-declarations -Wmissing-include-dirs -Wswitch-enum -Wswitch-default		    									\
 	-Weffc++ -Wmain -Wextra -Wall -g -pipe -fexceptions -Wcast-qual -Wconversion -Wctor-dtor-privacy            								\
 	-Wempty-body -Wformat-security -Wformat=2 -Wignored-qualifiers -Wlogical-op -Wno-missing-field-initializers 								\
@@ -17,16 +17,19 @@ EXECUTABLE = hash_table.exe
 
 VPATH = ./src/
 
-all: asm $(SOURCES) $(INCLUDES) $(EXECUTABLE)
+all: asm_hash asm_strcmp $(SOURCES) $(INCLUDES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(OBJECTS) hash_func_asm.o -o $@
+	@$(CC) $(OBJECTS) hash_func_asm.o my_strcmp_asm.o -o $@
 
-asm:  ./src/hash_func.asm
-	nasm -f elf64 ./src/hash_func.asm -o hash_func_asm.o
+asm_hash:  ./src/hash_func.asm
+	@nasm -f elf64 ./src/hash_func.asm -o hash_func_asm.o
+
+asm_strcmp: ./src/my_strcmp.asm
+	@nasm -f elf64 ./src/my_strcmp.asm -o my_strcmp_asm.o
 
 .cpp.o: $(INCLUDES) $(SOURCES)
-	$(CC) $(CFLAGS) $< -o $@
+	@$(CC) $(CFLAGS) $< -o $@
 
 .PHONY: clean
 		clean_debug

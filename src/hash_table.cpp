@@ -76,9 +76,11 @@ void hash_find_elem (const HashTable *hash_table, HashElemPos *hash_elem_pos, co
 
     hash_elem_pos->hash_table_pos_elem = hash_table->hash_func(elem, code_error) % hash_table->size;
 
-    for (int i = 1; i < hash_table->data[hash_elem_pos->hash_table_pos_elem]->size; i++)
+    int list_size = hash_table->data[hash_elem_pos->hash_table_pos_elem]->size;
+
+    for (int i = 1; i < list_size; i++)
     {
-        if (strcmp(elem, hash_table->data[hash_elem_pos->hash_table_pos_elem]->data[i].value) == 0)
+        if (inline_asm_my_strcmp(elem, hash_table->data[hash_elem_pos->hash_table_pos_elem]->data[i].value) == 0)
         {
             hash_elem_pos->list_pos_elem = i;
 

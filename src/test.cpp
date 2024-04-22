@@ -57,7 +57,7 @@ void test_second_part ()
     int code_error = 0;
 
     HashTable hash_table = {};
-    hash_init(&hash_table, crc32_hash_func, hash_table_size, &code_error);
+    hash_init(&hash_table, asm_crc32_hash_func, hash_table_size, &code_error);
 
     size_t len_data = 0;
 
