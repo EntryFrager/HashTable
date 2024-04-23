@@ -17,8 +17,6 @@ typedef hash_t (*hash_func_t)(const hash_elem_t elem, int *code_error);
     #define HASH_TABLE_DEBUG
 #endif
 
-#define GET_STATISTICS
-
 #ifdef HASH_TABLE_DEBUG
     #define assert_hash_table(hash_table)               \
     {                                                   \

@@ -10,10 +10,13 @@ static const char *CMD_PLOT_PY      = "python3 ./make_graphics.py";
 static void get_average_len_lists (HashTable *hash_table, StatisticsHashTable *stat, int *code_error);
 static void get_dispersion (HashTable *hash_table, StatisticsHashTable *stat, int *code_error);
 
-void get_statistic_hash_table (HashTable *hash_table, StatisticsHashTable *stat, int *code_error)
+void get_statistic_hash_table (HashTable *hash_table, StatisticsHashTable *stat, const char *hash_func_name, int *code_error)
 {
     assert_hash_table(hash_table);
     my_assert(stat != NULL, ERR_PTR);
+    my_assert(hash_func_name != NULL, ERR_PTR);
+
+    stat->hash_func_name = hash_func_name;
 
     stat->load_factor = (float) hash_table->n_load_elements / (float) hash_table->size;
 
@@ -61,6 +64,15 @@ void get_dispersion (HashTable *hash_table, StatisticsHashTable *stat, int *code
     stat->disp /= (float) hash_table->size;
 
     my_assert(stat != NULL, ERR_PTR);
+}
+
+void print_statistic_hash_table (StatisticsHashTable *stat, FILE *stream, int *code_error)
+{
+    my_assert(stat != NULL, ERR_PTR);
+    my_assert(stream != NULL, ERR_PTR);
+
+    fprintf(stream, "The load factor for the %s hash function is %.1f\n", stat->hash_func_name, stat->load_factor);
+    fprintf(stream,  "The dispersion for the %s hash function is %.0f\n\n", stat->hash_func_name, stat->disp);
 }
 
 void make_plot (const HashTable *hash_table, const char *name_hash_func, int *code_error)

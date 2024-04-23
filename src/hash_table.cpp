@@ -2,7 +2,6 @@
 #define HASH_TABLE_CPP
 
 #include "../include/hash_table.h"
-#include "../include/hash_table_statistics.h"
 #include "../include/my_strcmp.h"
 
 static const int LIST_SIZE = 2;
@@ -40,6 +39,7 @@ void hash_filling (HashTable *hash_table, const hash_elem_t *data, const size_t 
     for (size_t i = 0; i < n_elems; i++)
     {
         hash_insert_elem(hash_table, data[i], code_error);
+        ERR_RET();
     }
 
     assert_hash_table(hash_table);
@@ -52,8 +52,10 @@ void hash_insert_elem (HashTable *hash_table, const hash_elem_t elem, int *code_
     hash_t hash_elem = hash_table->hash_func(elem, code_error) % hash_table->size;
 
     check_list_for_availability(hash_table, hash_elem, code_error);
+    ERR_RET();
 
     list_insert_elem(hash_table->data[hash_elem], elem, code_error);
+    ERR_RET();
 
     hash_table->n_load_elements++;
 
@@ -65,6 +67,7 @@ void check_list_for_availability (HashTable *hash_table, const hash_t hash, int 
     if (hash_table->data[hash] == NULL)
     {
         hash_table->data[hash] = list_init(LIST_SIZE, code_error);
+        ERR_RET();
     }
 }
 
@@ -96,14 +99,17 @@ void hash_delete_elem (HashTable *hash_table, const hash_elem_t elem, int *code_
 
     HashElemPos hash_elem_pos = {};
     hash_find_elem(hash_table, &hash_elem_pos, elem, code_error);
+    ERR_RET();
 
     if (hash_table->data[hash_elem_pos.hash_table_pos_elem]->size == LIST_SIZE)
     {
         list_deinit(hash_table->data[hash_elem_pos.hash_table_pos_elem], code_error);
+        ERR_RET();
     }
     else
     {
         list_delete_elem(hash_table->data[hash_elem_pos.hash_table_pos_elem], hash_elem_pos.list_pos_elem, code_error);
+        ERR_RET();
     }
 
     assert_hash_table(hash_table);
@@ -118,6 +124,7 @@ void hash_destroy (HashTable *hash_table, int *code_error)
         if (hash_table->data[i] != NULL)
         {
             list_deinit(hash_table->data[i], code_error);
+            ERR_RET();
         }
     }
 

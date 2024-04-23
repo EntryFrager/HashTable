@@ -59,6 +59,7 @@ List *list_init (const int size, int *code_error)
     list->free = 1;
 
     list_filling(list, FICTIV_ELEM_ID, code_error);
+    ERR_RET();
 
     list->is_linear = true;
     list->is_init   = true;
@@ -93,6 +94,7 @@ void list_insert_elem (List *list, const ELEMENT value, int *code_error)
     assert_list(list);
 
     list_insert_elem_after_ph(list, value, list->tail, code_error);
+    ERR_RET();
 
     assert_list(list);
 }
@@ -103,6 +105,7 @@ void list_insert_elem_after_ph (List *list, const ELEMENT value, const int ip, i
     assert_list(list);
 
     list_check_realloc(list, code_error);
+    ERR_RET();
 
     int free_next = list->data[list->free].next;
     list->data[list->free].value = value;
@@ -150,7 +153,10 @@ void list_insert_elem_after_log (List *list, const ELEMENT value, int ip, int *c
     assert_list(list);
 
     ip = list_get_elem_index(list, ip, code_error);
+    ERR_RET();
+
     list_insert_elem_after_ph(list, value, ip, code_error);
+    ERR_RET();
 
     assert_list(list);
 }
@@ -162,6 +168,7 @@ void list_delete_elem (List *list, int ip, int *code_error)
     assert_list(list);
 
     ip = list_get_elem_index(list, ip, code_error);
+    ERR_RET();
 
     if (ip == list->head)
     {
@@ -222,6 +229,7 @@ void list_check_realloc (List *list, int *code_error)
     if (list->free == (list->size - 1))
     {
         list_realloc(list, UP, code_error);
+        ERR_RET();
     }
 
     assert_list(list);
@@ -241,6 +249,7 @@ void list_realloc (List *list, const int mode, int *code_error)
     else
     {
         lineariz_list(list, code_error);
+        ERR_RET();
 
         size = list->size - (list->size - list->free);
     }
@@ -255,6 +264,7 @@ void list_realloc (List *list, const int mode, int *code_error)
         list->data[list->free].next = temp_size;
 
         list_filling(list, temp_size, code_error);
+        ERR_RET();
     }
     else
     {
@@ -302,6 +312,7 @@ void lineariz_list (List *list, int *code_error)
     list->data = new_data;
 
     list_filling(list, list->free, code_error);
+    ERR_RET();
 
     list->is_linear = false;
 
@@ -314,6 +325,7 @@ void list_swap_elem (List *list, const int ip_1, const int ip_2, int *code_error
 
     int ip_pos_1 = list_get_elem_index(list, ip_1, code_error);
     int ip_pos_2 = list_get_elem_index(list, ip_2, code_error);
+    ERR_RET();
 
     Node *node_first  = &list->data[ip_pos_1];
     Node *node_second = &list->data[ip_pos_2];
