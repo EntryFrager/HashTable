@@ -4,7 +4,6 @@
 #include <nmmintrin.h>
 
 #include "./hash_table.h"
-#include "../error/error.h"
 
 inline hash_t nul_hash_func              (const hash_elem_t elem, int *code_error);
 inline hash_t ascii_code_hash_func       (const hash_elem_t elem, int *code_error);

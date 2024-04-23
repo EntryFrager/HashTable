@@ -31,7 +31,7 @@ char **pars_text (char *text, size_t *len_data, int *code_error)
     *len_data = get_n_lines(text, code_error);
     ERR_RET(NULL);
 
-    calloc_g_(data, char **, *len_data, sizeof(hash_elem_t));
+    calloc_g_(data, char **, *len_data, sizeof(char *));
 
     char *word = NULL;
 
