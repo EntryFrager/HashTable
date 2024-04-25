@@ -9,7 +9,7 @@ CFLAGS = -c -O3 -msse4.2 -mavx -mavx2 -masm=intel -Wshadow -Winit-self -Wredunda
 
 INCLUDES = include/hash_table.h include/hash_func.h include/hash_table_statistics.h include/input.h include/test.h include/my_strcmp.h list/list.h Include_file/error/error.h Include_file/utilities/utils.h
 
-SOURCES = main.cpp hash_table.cpp hash_func.cpp hash_table_statistics.cpp input.cpp test.cpp my_strcmp.cpp list/list.cpp Include_file/utilities/utils.cpp Include_file/error/error.cpp
+SOURCES = main.cpp hash_table.cpp hash_table_statistics.cpp input.cpp test.cpp my_strcmp.cpp list/list.cpp Include_file/utilities/utils.cpp Include_file/error/error.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

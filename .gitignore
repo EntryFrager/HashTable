@@ -4,3 +4,5 @@
 *.exe
 /callgrind
 .gitmodules
+1.py
+./1.py
