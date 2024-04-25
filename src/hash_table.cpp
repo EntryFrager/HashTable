@@ -2,7 +2,6 @@
 #define HASH_TABLE_CPP
 
 #include "../include/hash_table.h"
-#include "../include/my_strcmp.h"
 
 static const int LIST_SIZE = 2;
 
@@ -54,8 +53,11 @@ void hash_insert_elem (HashTable *hash_table, const hash_elem_t elem, int *code_
     check_list_for_availability(hash_table, hash_elem, code_error);
     ERR_RET();
 
-    list_insert_elem(hash_table->data[hash_elem], elem, code_error);
-    ERR_RET();
+    if (list_find_elem(hash_table->data[hash_elem], elem, code_error) == 0)
+    {
+        list_insert_elem(hash_table->data[hash_elem], elem, code_error);
+        ERR_RET();
+    }
 
     hash_table->n_load_elements++;
 
@@ -79,17 +81,9 @@ void hash_find_elem (const HashTable *hash_table, HashElemPos *hash_elem_pos, co
 
     hash_elem_pos->hash_table_pos_elem = hash_table->hash_func(elem, code_error) % hash_table->size;
 
-    int list_size = hash_table->data[hash_elem_pos->hash_table_pos_elem]->size;
+    hash_elem_pos->list_pos_elem = list_find_elem(hash_table->data[hash_elem_pos->hash_table_pos_elem], elem, code_error);
 
-    for (int i = 1; i < list_size; i++)
-    {
-        if (strcmp(elem, hash_table->data[hash_elem_pos->hash_table_pos_elem]->data[i].value) == 0)
-        {
-            hash_elem_pos->list_pos_elem = i;
-
-            return;
-        }
-    }
+    printf("%d %d\n", hash_elem_pos->hash_table_pos_elem, hash_elem_pos->list_pos_elem);
 }
 
 void hash_delete_elem (HashTable *hash_table, const hash_elem_t elem, int *code_error)

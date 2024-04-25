@@ -7,6 +7,7 @@
 
 #include "../Include_file/error/error.h"
 #include "../Include_file/utilities/utils.h"
+#include "../include/my_strcmp.h"
 
 #ifdef DEBUG
     #define LIST_DEBUG
@@ -70,6 +71,8 @@ void lineariz_list (List *list, int *code_error);
 void list_swap_elem (List *list, const int ip_1, const int ip_2, int *code_error);
 
 void list_print (const List *list, int *code_error);
+
+int list_find_elem (const List *list, const ELEMENT elem, int *code_error);
 
 void list_deinit (List *list, int *code_error);
 

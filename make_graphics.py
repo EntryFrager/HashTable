@@ -12,7 +12,7 @@ with open(sys.argv[1], 'r') as file:
         X.append(float(ROWS[0]))
         Y.append(float(ROWS[1]))
 
-plt.plot(X, Y)
+plt.bar(X, Y)
 plt.title(sys.argv[2])
 plt.xlabel('Ячейки хэш-таблицы')
 plt.ylabel('Количество коллизий')

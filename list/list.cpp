@@ -423,6 +423,27 @@ void list_print (const List *list, int *code_error)
     }
 }
 
+int list_find_elem (const List *list, const ELEMENT elem, int *code_error)
+{
+    my_assert(elem != NULL, ERR_PTR);
+    assert_list(list);
+
+    int list_tail = list->tail;
+
+    if (list->tail != list->head)
+    {
+        for (int i = 1; i < list_tail; i++)
+        {
+            if (strcmp(elem, list->data[i].value) == 0)
+            {
+                return i;
+            }
+        }
+    }
+
+    return 0;
+}
+
 void list_deinit (List *list, int *code_error)
 {
     assert_list(list);

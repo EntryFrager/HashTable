@@ -2,7 +2,6 @@
 #define PARS_CPP
 
 #include "pars.h"
-#include "../utilities/utils.h"
 
 static const char *file_pars_text_name = "../text/pars_text.txt";
 
@@ -30,12 +29,12 @@ char *input_file (const char *file_name, size_t *size_file, int *code_error)
 {
     my_assert(size_file != NULL, ERR_PTR);
 
-    FOPEN_(fp_text, file_name, "r");
+    fopen_(fp_text, file_name, "r");
 
     char *buf = get_file_to_str(fp_text, size_file, code_error);
     ERR_RET(NULL);
 
-    FCLOSE_(fp_text);
+    fclose_(fp_text);
 
     return buf;
 }
@@ -78,11 +77,11 @@ void print_pars_text_to_file(const char *buf, int *code_error)
 {
     my_assert(buf != NULL, ERR_PTR);
 
-    FOPEN_(fp_pars_text, file_pars_text_name, "w");
+    fopen_(fp_pars_text, file_pars_text_name, "w");
 
     fprintf(fp_pars_text, "%s", buf);
 
-    FCLOSE_(fp_pars_text);
+    fclose_(fp_pars_text);
 }
 
 #endif
