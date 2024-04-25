@@ -50,7 +50,7 @@ void test_second_part (const char *file_name, const int hash_table_size, int *co
     my_assert(file_name != NULL, ERR_PTR);
 
     HashTable hash_table = {};
-    hash_init(&hash_table, crc32_hash_func, hash_table_size, code_error);
+    hash_init(&hash_table, asm_crc32_hash_func, hash_table_size, code_error);
     ERR_RET();
 
     size_t len_data = 0;

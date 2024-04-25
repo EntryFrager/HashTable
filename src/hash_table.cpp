@@ -81,9 +81,17 @@ void hash_find_elem (const HashTable *hash_table, HashElemPos *hash_elem_pos, co
 
     hash_elem_pos->hash_table_pos_elem = hash_table->hash_func(elem, code_error) % hash_table->size;
 
-    hash_elem_pos->list_pos_elem = list_find_elem(hash_table->data[hash_elem_pos->hash_table_pos_elem], elem, code_error);
+    int list_size = hash_table->data[hash_elem_pos->hash_table_pos_elem]->size;
 
-    printf("%d %d\n", hash_elem_pos->hash_table_pos_elem, hash_elem_pos->list_pos_elem);
+    for (int i = 1; i < list_size; i++)
+    {
+        if (avx_my_strcmp(elem, hash_table->data[hash_elem_pos->hash_table_pos_elem]->data[i].value) == 0)
+        {
+            hash_elem_pos->list_pos_elem = i;
+
+            return;
+        }
+    }
 }
 
 void hash_delete_elem (HashTable *hash_table, const hash_elem_t elem, int *code_error)

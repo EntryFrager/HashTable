@@ -17,7 +17,7 @@ int main ()
     #endif
 
     #ifdef RESEARCH_HASH_FUNC
-        ResearchHashFunc research_hash_func[N_HASH_FUNC] = {{"nul_hash_func", nul_hash_func, 10},
+        ResearchHashFunc research_hash_func[N_HASH_FUNC] = {{"nul_hash_func", nul_hash_func, HASH_TABLE_SIZE},
                                                             {"ascii_code_hash_func", ascii_code_hash_func, HASH_TABLE_SIZE},
                                                             {"len_word_hash_func", len_word_hash_func, HASH_TABLE_SIZE},
                                                             {"control_sum_hash_func_4901", control_sum_hash_func, HASH_TABLE_SIZE},
